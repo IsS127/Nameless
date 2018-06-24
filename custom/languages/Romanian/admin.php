@@ -133,6 +133,11 @@ $language = array(
     'login_method' => 'Metoda de conectare',
     'privacy_and_terms' => 'Politica de confidențialitate și termenii și condițiile',
 
+    // Reputation
+    'enable_reputation' => 'Enable Reputation?',
+    'amount' => 'Amount',
+    'amount_reputation_tooltip' => 'This is the amount of reputation given',
+
     // Reactions
     'icon' => 'Iconiță',
     'type' => 'Tip',

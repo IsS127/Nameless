@@ -179,6 +179,7 @@ $language = array(
 	'private_profile_page' => 'This is a private profile!',
 	'new_wall_post_reply' => '{x} has replied to your post on {y}\'s profile.', // Don't replace {x} or {y}
 	'new_wall_post_reply_your_profile' => '{x} has replied to your post on your profile.', // Don't replace {x}
+    'reputation' => 'Reputation',
 	
 	// Reports
 	'invalid_report_content' => '無法建立回報. 請確認你輸入的內容有在 2-1024 字元以內.',

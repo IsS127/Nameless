@@ -998,8 +998,11 @@ class User {
         }
         return false;
     }
-	
-	// Get a user's profile views, by user ID
+
+    /*
+    *  Returns profile views.
+    *  Params: $user_id (int) - user ID of user to check - optional, default to logged in user
+    */
 	public function getProfileViews($user_id = null) {
 		$data = $this->_db->get('users', array('id', '=', $user_id));
 		$results = $data->results();
@@ -1010,7 +1013,10 @@ class User {
 		}
 	}
 
-    // Is private profile enabled and does he have the permission to use it?
+    /*
+    *  Is private profile enabled and does the user have the permission to use it?
+    *  Params: $user_id (int) - user ID of user to check - optional, default to logged in user
+    */
     public function canPrivateProfile($user_id = null){
         $settings_data = $this->_db->get('settings', array('name', '=', 'private_profile'));
         $settings_results = $settings_data->results();
@@ -1020,7 +1026,10 @@ class User {
             return false;
     }
 
-    // Is the profile page set to private?
+    /*
+    *  Is the profile page set to private?
+    *  Params: $user_id (int) - user ID of user to check - optional, default to logged in user
+    */
     public function isPrivateProfile($user_id = null) {
         $cp_data = $this->_db->get('users', array('id', '=', $user_id));
         $cp_results = $cp_data->results();
@@ -1030,6 +1039,56 @@ class User {
         } else {
             // It's not private
             return false;
+        }
+    }
+
+    /*
+    *  Changes the reputation of the user specified.
+    *  Params: $amount (int) - amount of reputation.
+    *          $method (string) - the method of changing, + to give and - to remove amount.
+    *          $user_id (int) - user ID of user to check - optional, default to logged in user
+    */
+    public function changeReputation($amount = 1, $method = "+", $user_id = null){
+        if($user_id){
+            $query = $this->_db->get('users', array('id', '=', $user_id));
+
+            if($query->count()){
+                $rep = $query->first();
+            $rep = $rep->reputation;
+
+            if($method == '-'){
+                if($rep - $amount > 0)
+                    $new_rep = $rep - $amount;
+
+                else
+                    $new_rep = 0;
+
+            } else
+                $new_rep = $rep + $amount;
+
+            $this->_db->update('users', $user_id, array(
+                'reputation' => $new_rep
+            ));
+
+        }
+
+        } else if($this->isLoggedIn()){
+            $rep = $this->data()->reputation;
+
+            if($method == '-'){
+                if($rep - $amount > 0)
+                    $new_rep = $rep - $amount;
+
+                else
+                    $new_rep = 0;
+
+            } else
+                $new_rep = $rep + $amount;
+
+            $this->update(array(
+                'reputation' => $new_rep
+            ));
+
         }
     }
 

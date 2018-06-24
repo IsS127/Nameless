@@ -131,6 +131,12 @@ $current_default_language = $current_default_language[0]->value;
                                             <a href="<?php echo URL::build('/admin/core/', 'view=terms'); ?>"><?php echo $language->get('admin', 'privacy_and_terms'); ?></a>
                                         </td>
                                     </tr>
+                                <?php } if($user->hasPermission('admincp.core.reputation')){ ?>
+                                <tr>
+                                    <td>
+                                        <a href="<?php echo URL::build('/admin/core/', 'view=reputation'); ?>"><?php echo $language->get('user', 'reputation'); ?></a>
+                                    </td>
+                                </tr>
                                 <?php } if($user->hasPermission('admincp.core.reactions')){ ?>
                                 <tr>
                                     <td>
@@ -278,7 +284,7 @@ $current_default_language = $current_default_language[0]->value;
                                             // Update cache
                                             $cache->setCache('portal_cache');
                                             $cache->store('portal', $use_portal);
-											
+
                                             // Private profile
                                             $private_profile_id = $queries->getWhere('settings', array('name', '=', 'private_profile'));
                                             $private_profile_id = $private_profile_id[0]->id;
@@ -375,7 +381,7 @@ $current_default_language = $current_default_language[0]->value;
                                             ));
 
                                             Log::getInstance()->log(Log::Action('admin/core/general'));
-                                            
+
                                             // Update cache
                                             $cache->setCache('force_https_cache');
                                             $cache->store('force_https', $https);
@@ -685,7 +691,7 @@ $current_default_language = $current_default_language[0]->value;
 
                                                             if (isset($_POST['forum']) && $_POST['forum'] == 'on') $forum_posts = 1;
                                                             else $forum_posts = 0;
-															
+
 															if (isset($_POST['editable']) && $_POST['editable'] == 'on') $editable = 1;
                                                             else $editable = 0;
 
@@ -760,7 +766,7 @@ $current_default_language = $current_default_language[0]->value;
                                                     <input type="checkbox" id="inputRequired" name="required"
                                                            class="js-switch"/>
                                                 </div>
-												
+
 												<div class="form-group">
                                                     <label for="inputEditable"><?php echo $language->get('admin', 'editable'); ?></label>
                                                     <span class="badge badge-info"><i class="fa fa-question"
@@ -860,7 +866,7 @@ $current_default_language = $current_default_language[0]->value;
 
                                                         if (isset($_POST['forum']) && $_POST['forum'] == 'on') $forum_posts = 1;
                                                         else $forum_posts = 0;
-														
+
 														if (isset($_POST['editable']) && $_POST['editable'] == 'on') $editable = 1;
                                                         else $editable = 0;
 
@@ -939,7 +945,7 @@ $current_default_language = $current_default_language[0]->value;
                                                 <input type="checkbox" id="inputRequired" name="required"
                                                        class="js-switch" <?php if ($field->required == 1) echo ' checked'; ?>/>
                                             </div>
-											
+
 											<div class="form-group">
                                                 <label for="inputEditable"><?php echo $language->get('admin', 'editable'); ?></label>
                                                 <span class="badge badge-info"><i class="fa fa-question"
@@ -986,7 +992,73 @@ $current_default_language = $current_default_language[0]->value;
                                     }
                                 }
                                 break;
+                            case 'reputation':
+                                if(!$user->hasPermission('admincp.core.reputation')){
+                                    Redirect::to(URL::build('/admin/core'));
+                                    die();
+                                }
+                                $reputation_system = $queries->getWhere('settings', array('name', '=', 'reputation'));
+                                $reputation_system = $reputation_system[0];
+                                $reputation_system = $reputation_system->value;
 
+                                // Deal with input
+                                if (Input::exists()) {
+                                    if (Token::check(Input::get('token'))) {
+                                        if (isset($_POST['enable_reputation'])) {
+                                            // Either enable or disable Reputation
+                                            $reputation_system_id = $queries->getWhere('settings', array('name', '=', 'reputation'));
+                                            $reputation_system_id = $reputation_system_id[0]->id;
+
+                                            $queries->update('settings', $reputation_system_id, array(
+                                                'value' => Input::get('enable_reputation')
+                                            ));
+
+                                            // Re-query for Reputation
+                                            $reputation_system = $queries->getWhere('settings', array('name', '=', 'reputation'));
+                                            $reputation_system = $reputation_system[0]->value;
+                                        } else {
+                                            // Integration settings
+
+                                        }
+                                    } else {
+                                        // Invalid token
+
+                                    }
+                                }
+                                ?>
+                                <h4 style="display:inline;"><?php echo $language->get('user', 'reputation'); ?></h4>
+                                <hr>
+                                <br/>
+                                <form id="enableReputation" action="" method="post">
+                                    <?php echo $language->get('admin', 'enable_reputation'); ?>
+                                    <input type="hidden" name="enable_reputation" value="0">
+                                    <input name="enable_reputation" type="checkbox"
+                                           class="js-switch js-check-change"<?php if ($reputation_system == 1) { ?> checked<?php } ?>
+                                           value="1"/>
+                                    <input type="hidden" name="token" value="<?php echo Token::get(); ?>">
+                                </form>
+                                <br/>
+                                <?php
+                                if ($reputation_system == 1) {
+                                    ?>
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th><?php echo $language->get('admin', 'type'); ?></th>
+                                            <th><?php echo $language->get('admin', 'amount'); ?>
+                                                <span class="badge badge-info"><i class="fa fa-question-circle"
+                                                                                  data-container="body"
+                                                                                  data-toggle="popover" data-placement="top"
+                                                                                  title="<?php echo $language->get('general', 'info'); ?>"
+                                                                                  data-content="<?php echo $language->get('admin', 'amount_reputation_tooltip'); ?>"></i></span></th>
+                                            <th><?php echo $language->get('admin', 'enabled'); ?></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                    </table>
+                                    <?php
+                                }
+                                break;
                             case 'reactions':
                                 if(!$user->hasPermission('admincp.core.reactions')){
                                     Redirect::to(URL::build('/admin/core'));
@@ -1328,7 +1400,7 @@ $current_default_language = $current_default_language[0]->value;
                                         ));
 
                                         $cache->store('discord', Output::getClean(Input::get('discordid')));
-										
+
                                         // Google Plus URL
                                         $gplus_url_id = $queries->getWhere('settings', array('name', '=', 'gplus_url'));
                                         $gplus_url_id = $gplus_url_id[0]->id;
@@ -1820,7 +1892,7 @@ $current_default_language = $current_default_language[0]->value;
                                                 $headers = 'From: ' . $siteemail . "\r\n" .
                                                     'Reply-To: ' . $siteemail . "\r\n" .
                                                     'X-Mailer: PHP/' . phpversion() . "\r\n" .
-                                                    'MIME-Version: 1.0' . "\r\n" . 
+                                                    'MIME-Version: 1.0' . "\r\n" .
                                                     'Content-type: text/html; charset=UTF-8' . "\r\n";
 
                                                 $email = array(
@@ -1933,7 +2005,7 @@ $current_default_language = $current_default_language[0]->value;
                                                     $error = $language->get('admin', 'unable_to_write_email_config');
                                                 }
                                             }
-											
+
 											if(!isset($error)){
 												// Redirect to refresh config values
 												Redirect::to(URL::build('/admin/core/', 'view=email'));
@@ -2329,7 +2401,7 @@ $current_default_language = $current_default_language[0]->value;
                                                 }
                                             }
                                         }
-										
+
 										// Icons
                                         $cache->setCache('navbar_icons');
                                         if(isset($_POST['inputIcon']) && count($_POST['inputIcon'])){
@@ -2346,7 +2418,7 @@ $current_default_language = $current_default_language[0]->value;
                                                 $cache->store($key . '_icon', $item);
                                             }
                                         }
-										
+
 										Log::getInstance()->log(Log::Action('admin/core/nav'));
 
                                         // Reload to update info
@@ -2519,6 +2591,19 @@ $current_default_language = $current_default_language[0]->value;
         };
 
         $(".image-picker").imagepicker();
+    </script>
+<?php } else if (isset($_GET['view']) && $_GET['view'] == 'reputation'){ ?>
+    <script>
+        /*
+        *  Submit form on clicking enable/disable Reputation
+        */
+        if($('.js-check-change').length) {
+            var changeCheckbox = document.querySelector('.js-check-change');
+
+            changeCheckbox.onchange = function () {
+                $('#enableReputation').submit();
+            };
+        }
     </script>
 <?php } ?>
 </body>

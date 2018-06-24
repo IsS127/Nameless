@@ -124,6 +124,11 @@ $language = array(
     'login_method' => 'Método de logueo',
     'privacy_and_terms' => 'Política de privacidad. Términos & Condiciones',
 
+    // Reputation
+    'enable_reputation' => 'Enable Reputation?',
+    'amount' => 'Amount',
+    'amount_reputation_tooltip' => 'This is the amount of reputation given.',
+
 	// Reactions
 	'icon' => 'Icono',
 	'type' => 'Tipo',

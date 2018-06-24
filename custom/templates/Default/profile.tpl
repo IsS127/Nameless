@@ -245,6 +245,9 @@
 					  <li>{$ABOUT_FIELDS.registered.title}</strong> <span rel="tooltip" title="{$ABOUT_FIELDS.registered.tooltip}">{$ABOUT_FIELDS.registered.value}</li>
 					  <li>{$ABOUT_FIELDS.last_seen.title}</strong> <span rel="tooltip" title="{$ABOUT_FIELDS.last_seen.tooltip}">{$ABOUT_FIELDS.last_seen.value}</li>
 					  <li>{$ABOUT_FIELDS.profile_views.title}</strong> {$ABOUT_FIELDS.profile_views.value}</li>
+                      {if isset($ABOUT_FIELDS.reputation)}
+					  	<li>{$ABOUT_FIELDS.reputation.title}</strong>: {$ABOUT_FIELDS.reputation.value}</li>
+					  {/if}
 					</ul>
 				  {else}
 				    <h2{if $USERNAME_COLOUR != false} style="{$USERNAME_COLOUR}"{/if}>{$NICKNAME}</h2>

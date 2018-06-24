@@ -132,6 +132,11 @@ $language = array(
 	'login_method' => 'Login Method',
     'privacy_and_terms' => 'Privacy Policy and Terms & Conditions',
 
+    // Reputation
+    'enable_reputation' => 'Enable Reputation?',
+    'amount' => 'Amount',
+    'amount_reputation_tooltip' => 'This is the amount of reputation given',
+
 	// Reactions
 	'icon' => '圖標',
 	'type' => '類型',

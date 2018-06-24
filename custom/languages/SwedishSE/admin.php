@@ -129,9 +129,14 @@ $language = array(
     'login_method' => 'Inloggningsmetod',
     'privacy_and_terms' => 'Sekretesspolicy och Villkor',
 
+    // Reputation
+    'enable_reputation' => 'Aktivera Rykte?',
+    'amount' => 'Mängd',
+    'amount_reputation_tooltip' => 'Detta är mängden rykte som ges.',
+
 	// Reactions
 	'icon' => 'Ikon',
-	'type' => 'typ',
+	'type' => 'Typ',
 	'positive' => 'Positiv',
 	'neutral' => 'Neutral',
 	'negative' => 'Negativ',

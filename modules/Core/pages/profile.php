@@ -687,6 +687,19 @@ require(ROOT_PATH . '/core/includes/paginate.php'); // Get number of wall posts 
 			'type' => 'text',
 			'value' => $query->profile_views
 		);
+
+        // Add Reputation
+        $reputation_system = $queries->getWhere('settings', array('name', '=', 'reputation'));
+        $reputation_system = $reputation_system[0];
+
+        if($reputation_system->value == '1') {
+            // Add Reputation
+            $fields['reputation'] = array(
+                'title' => $language->get("user", 'reputation'),
+                'type' => 'text',
+                'value' => $query->reputation
+            );
+        }
 		
 		$smarty->assign('ABOUT_FIELDS', $fields);
 		
